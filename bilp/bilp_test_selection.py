@@ -32,6 +32,7 @@ def optimize(bdm, costs):
 
     print('end of matrix construction: ')
     model = Model('test selection')
+    model.setParam("Seed", 0)
     z = model.addVars(n_tests, vtype=GRB.BINARY)
 
     model.Params.iterationlimit = 1000000
