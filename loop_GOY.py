@@ -6,7 +6,7 @@ input_file_name = 'data/networks/GOY_v1.inp'
 input_name = 'GOY_4_0_23'
 input_folder = 'data/mtes_results'
 output_folder = 'data/decsel_results'
-output_name = 'GOY_'
+output_name = 'GOY'
 
 dec_params = {'ufactor': 50, 'contig': False, 'ncuts': 100, 'recursive': True, 'niter': 100}
 constraints = [['e0', 'e24', 'e22'], ['e10', 'e42'], ['e17', 'e39']]
