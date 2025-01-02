@@ -293,3 +293,31 @@ class NetworkDiagnoser():
             parts = decompose.parts_from_eq_assignment(eq_assignment)
             parts = self.encode_for_max_similarity(parts, old_parts)
             self.plot_eqation_graph(eg, pos, parts, cmap, i + 1)
+
+    def run_without_decomposition_first(self, constraints=None, flow_small_weights=False, **kwargs):
+        """
+        First selects a minimal set of FMSOs without considering decomposition costs,
+        then performs decomposition on the selected FMSOs.
+        """
+        # Get initial FMSOs and tests
+        fmsos_eqs = [['e' + str(e) for e in el] for el in self.msos]
+        n_faults = len(set(self.fault_enc.values()))
+        selected_fmsos, selected_tests = decompose.select_fmsos_without_decomposition(fmsos_eqs, self.tests_red, n_faults)
+        
+        # Set up weights for flow equations if requested
+        small_weights = None
+        if flow_small_weights:
+            small_weights = [key for key, e in self.eq_name_map.items() if e[1] == 'q']
+        
+        # Perform decomposition on the selected FMSOs
+        subsystems, edgecuts = decompose.decompose_from_fmsos(selected_fmsos, self.sm_data['model'], 
+                                                             self.sm_data, self.n_subsystems,
+                                                             constraints=constraints,
+                                                             small_weights=small_weights)
+        
+        # Store results
+        self.fmsos = selected_fmsos
+        self.subsystems_res = subsystems
+        self.steps = [subsystems, edgecuts]  # Simplified steps list
+        self.costs = [edgecuts]
+        self.calc_shared_vars()

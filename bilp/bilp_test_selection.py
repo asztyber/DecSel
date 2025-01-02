@@ -55,6 +55,8 @@ def optimize(bdm, costs):
 
 def run_search(df, n_faults):
     bdm = df_to_bdm(df, n_faults)
-    selected_tests = optimize(bdm, list(df['inter_connections']))
+    # Use inter_connections if available, otherwise use equal costs of 1.0
+    costs = list(df['inter_connections']) if 'inter_connections' in df.columns else [1.0] * len(df)
+    selected_tests = optimize(bdm, costs)
 
     return df.index[selected_tests]

@@ -32,3 +32,8 @@ Run DecSel algorithm loop:
 ```python
 python loop_GOY.py
 ```
+
+Run decomposition only from the arbitrary set of FMSOs:
+```python
+python decomposition_only_GOY.py
+```

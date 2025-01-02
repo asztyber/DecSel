@@ -160,3 +160,29 @@ def count_fmso_interconnections(fmso, eq_assignment, sm):
                 vars2 = sm[e2]
                 n_interconnections = n_interconnections + len(set(vars1).intersection(set(vars2)))
     return n_interconnections / 2
+
+def select_fmsos_without_decomposition(fmsos_eqs, tests, n_faults):
+    """
+    Selects a minimal set of FMSOs without considering decomposition costs.
+    
+    Args:
+        fmsos_eqs: List of FMSOs (each FMSO is a list of equations)
+        tests: List of test vectors (each test vector shows which faults are detected)
+        n_faults: Number of faults in the system
+        
+    Returns:
+        tuple: (selected_fmsos, selected_tests) - Lists of selected FMSOs and their corresponding tests
+    """
+    # Create DataFrame with tests and equations
+    df = pd.DataFrame({'tests': tests, 'eqs': fmsos_eqs})
+    df = df.drop_duplicates(subset='tests')  # Remove duplicate tests
+    
+    # Use existing BILP selection since it already minimizes the number of tests
+    test_ids = bilp_test_selection.run_search(df, n_faults)
+    
+    # Get selected FMSOs and tests
+    selected = df.loc[list(test_ids)]
+    selected_fmsos = list(selected['eqs'])
+    selected_tests = list(selected['tests'])
+    
+    return selected_fmsos, selected_tests
